@@ -1,4 +1,5 @@
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -16,15 +17,19 @@ public class FlightsPage {
     public FlightsPage(WebDriver driver_) {
         driver=driver_;
     }
-    public void init()
-    {
-        flightsTable=driver.findElement(By.xpath("//*[@id='board1']"));
-        nextButton=driver.findElement(By.id("ctl00_rptPaging_ctl06_aNext"));
-    }
+
 
     public boolean isButtonAppear()
     {
-        return nextButton.isDisplayed();
+        try
+        {
+            nextButton=driver.findElement(By.id("ctl00_rptPaging_ctl06_aNext"));
+            return true;
+        }
+        catch (NoSuchElementException ex)
+        {
+               return false;
+        }
     }
     public void clickNextButton()
     {
@@ -33,7 +38,12 @@ public class FlightsPage {
 
     public void saveFlightsFromPageToFile(PrintWriter myFile)
     {
-//        WebElement table=flightsTable;
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        flightsTable=driver.findElement(By.id("board1"));
         List<WebElement> rows=flightsTable.findElements(By.tagName("tr"));
         java.util.Iterator <WebElement> i=rows.iterator();
         while (i.hasNext())
